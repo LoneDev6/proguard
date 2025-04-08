@@ -174,12 +174,10 @@ public class ReTrace
 
             // Iterate through the stack trace and remove any JAR prefix (usually from Spigot plugins stacktraces)
             // Example:  `at ItemsAdder_4.0.9-hotfix-1.jar/itemsadder.m.aad.a(SourceFile:196) ~[ItemsAdder_4.0.9-hotfix-1.jar:?]`
-            if (obfuscatedLine.trim().startsWith("at ") && obfuscatedLine.contains(".jar/"))
+            // Pattern captures the entire prefix before ".jar/", and the rest after it
             {
-                // Pattern captures the entire prefix before ".jar/", and the rest after it
-                Pattern jarPattern = Pattern.compile("^(\\s*at\\s+)([^/]+)\\.jar/(.*)");
+                Pattern jarPattern = Pattern.compile("(\\s*at\\s+)([^/]+)\\.jar/+(.+)");
                 java.util.regex.Matcher matcher = jarPattern.matcher(obfuscatedLine);
-
                 if (matcher.find())
                 {
                     // Reconstruct the line by keeping the indentation (matcher.group(1)) and removing the .jar part
