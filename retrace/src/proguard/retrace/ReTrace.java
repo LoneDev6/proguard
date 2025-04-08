@@ -24,6 +24,7 @@ import proguard.obfuscate.MappingReader;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Tool for de-obfuscating stack traces of applications that were obfuscated
@@ -169,6 +170,21 @@ public class ReTrace
             if (obfuscatedLine == null)
             {
                 break;
+            }
+
+            // Iterate through the stack trace and remove any JAR prefix (usually from Spigot plugins stacktraces)
+            // Example:  `at ItemsAdder_4.0.9-hotfix-1.jar/itemsadder.m.aad.a(SourceFile:196) ~[ItemsAdder_4.0.9-hotfix-1.jar:?]`
+            if (obfuscatedLine.trim().startsWith("at ") && obfuscatedLine.contains(".jar/"))
+            {
+                // Pattern captures the entire prefix before ".jar/", and the rest after it
+                Pattern jarPattern = Pattern.compile("^(\\s*at\\s+)([^/]+)\\.jar/(.*)");
+                java.util.regex.Matcher matcher = jarPattern.matcher(obfuscatedLine);
+
+                if (matcher.find())
+                {
+                    // Reconstruct the line by keeping the indentation (matcher.group(1)) and removing the .jar part
+                    obfuscatedLine = matcher.group(1) + matcher.group(3);
+                }
             }
 
             // Try to match it against the regular expression.

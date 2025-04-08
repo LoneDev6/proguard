@@ -164,7 +164,7 @@ public class ProGuardGUI extends JFrame
 
     private final JCheckBox  reTraceVerboseCheckBox  = new JCheckBox(msg("verbose"));
     private final JTextField reTraceMappingTextField = new JTextField(40);
-    private final JTextArea  stackTraceTextArea      = new JTextArea(3, 40);
+    private final JTextArea  stackTraceTextArea      = new JTextArea(20, 40);
     private final JTextArea  reTraceTextArea         = new JTextArea(msg("reTraceInfo"), 3, 40);
 
 
@@ -173,6 +173,18 @@ public class ProGuardGUI extends JFrame
      */
     public ProGuardGUI()
     {
+        try
+        {
+            UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarkLaf");
+        }
+        catch (Exception e)
+        {
+            JOptionPane.showMessageDialog(this,
+                                          "Error setting look and feel: " + e.getMessage(),
+                                          "Error",
+                                          JOptionPane.ERROR_MESSAGE);
+        }
+
         setTitle("ProGuard");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -564,7 +576,6 @@ public class ProGuardGUI extends JFrame
                                                                 msg("selectApplyMappingFile"));
 
         JLabel reTraceMappingLabel = new JLabel(msg("mappingFile"));
-        reTraceMappingLabel.setForeground(reTraceVerboseCheckBox.getForeground());
 
         reTraceSettingsPanel.add(tip(reTraceVerboseCheckBox,     "verboseTip"),             constraintsLastStretch);
         reTraceSettingsPanel.add(tip(reTraceMappingLabel,        "mappingFileTip"),         constraints);
@@ -582,6 +593,8 @@ public class ProGuardGUI extends JFrame
         reTraceTextArea.setEditable(false);
         reTraceTextArea.setLineWrap(true);
         reTraceTextArea.setWrapStyleWord(true);
+        // JTextArea set text color to white
+        reTraceTextArea.setForeground(Color.white);
         JScrollPane reTraceScrollPane = new JScrollPane(reTraceTextArea);
         reTraceScrollPane.setBorder(new EmptyBorder(1, 1, 1, 1));
         addBorder(reTraceScrollPane, "deobfuscatedStackTrace");
@@ -615,14 +628,14 @@ public class ProGuardGUI extends JFrame
 
         // Create the main tabbed pane.
         TabbedPane tabs = new TabbedPane();
-        tabs.add(msg("proGuardTab"),     proGuardPanel);
+//        tabs.add(msg("proGuardTab"),     proGuardPanel);
+        tabs.add(msg("reTraceTab"),      reTracePanel);
         tabs.add(msg("inputOutputTab"),  inputOutputPanel);
         tabs.add(msg("shrinkingTab"),    shrinkingPanel);
         tabs.add(msg("obfuscationTab"),  obfuscationPanel);
         tabs.add(msg("optimizationTab"), optimizationPanel);
         tabs.add(msg("informationTab"),  optionsPanel);
         tabs.add(msg("processTab"),      processPanel);
-        tabs.add(msg("reTraceTab"),      reTracePanel);
         tabs.addImage(Toolkit.getDefaultToolkit().getImage(
             this.getClass().getResource(TITLE_IMAGE_FILE)));
 

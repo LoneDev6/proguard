@@ -220,6 +220,10 @@ ProGuard in detail.
 
 Building ProGuard is easy - you'll just need a Java 8 JDK installed.
 
+```bash
+./gradlew build -x test
+```
+
 The artifacts will be generated in the `lib` directory. You can then execute ProGuard using the
 scripts in `bin`, for example:
 
